@@ -1,0 +1,12 @@
+[0107/174612.309:INFO:CONSOLE:113] "Event handler of 'x-storagemutated-1' event must be added on the initial evaluation of worker script.", source: https://static.whatsapp.net/rsrc.php/v4/yp/r/3fE89x_dX76.js (113)
+[0107/174615.817:INFO:CONSOLE:77] "ErrorUtils caught an error:
+
+multiple-uim-roots
+
+Subsequent non-fatal errors won't be logged; see https://fburl.com/debugjs. [object Object]", source: https://static.whatsapp.net/rsrc.php/v4/yv/r/0p5QPbRp7Rp.js (77)
+[0107/174616.801:INFO:CONSOLE:113] "Event handler of 'x-storagemutated-1' event must be added on the initial evaluation of worker script.", source: https://static.whatsapp.net/rsrc.php/v4/yp/r/3fE89x_dX76.js (113)
+[0107/180922.826:INFO:CONSOLE:113] "Event handler of 'x-storagemutated-1' event must be added on the initial evaluation of worker script.", source: https://static.whatsapp.net/rsrc.php/v4/yp/r/3fE89x_dX76.js (113)
+[0107/180935.548:ERROR:content\browser\gpu\gpu_process_host.cc:1006] GPU process exited unexpectedly: exit_code=-1073741510
+[0107/180935.548:WARNING:content\browser\gpu\gpu_process_host.cc:1448] The GPU process has crashed 1 time(s)
+[0107/180935.688:WARNING:content\browser\gpu\gpu_process_host.cc:1028] Reinitialized the GPU process after a crash. The reported initialization time was 97 ms
+[0107/180940.610:ERROR:content\browser\network_service_instance_impl.cc:613] Network service crashed or was terminated, restarting service.
