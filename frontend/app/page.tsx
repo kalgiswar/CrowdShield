@@ -37,7 +37,8 @@ export default function Dashboard() {
   // Poll for data
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:8002/sessions");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
+      const res = await fetch(`${apiUrl}/sessions`);
       if (res.ok) {
         const data: Session[] = await res.json();
         // Sort by newest first
@@ -84,7 +85,8 @@ export default function Dashboard() {
     if (!sessionId) return;
 
     try {
-      const res = await fetch(`http://localhost:8002/session/${sessionId}/${action}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
+      const res = await fetch(`${apiUrl}/session/${sessionId}/${action}`, {
         method: 'POST'
       });
 
@@ -268,7 +270,7 @@ export default function Dashboard() {
               // Default View (No Incident Selected) - Show Camera 1 Feed
               <div className="w-full h-full relative">
                 <img
-                  src="http://localhost:8000/video_feed/cam1"
+                  src={`${process.env.NEXT_PUBLIC_LIVESTREAM_URL || "http://localhost:8000"}/video_feed/cam1`}
                   className="w-full h-full object-cover"
                   alt="Live Camera Feed"
                 />

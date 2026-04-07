@@ -24,6 +24,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to Crowd Shield API",
+        "docs_url": "/docs",
+        "status": "active"
+    }
+
 # Configuration
 UPLOAD_DIR = "uploaded_videos"
 DB_NAME = "crowd_shield.db"
