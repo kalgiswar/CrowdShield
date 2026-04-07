@@ -1,6 +1,6 @@
-# Crowd-Shield
+# CrowdShield
 
-Crowd-Shield is a comprehensive crowd management system designed to enhance safety and efficiency during large gatherings. It combines real-time crowd density analysis, predictive modeling, and emergency response coordination to ensure public safety.
+CrowdShield is a comprehensive crowd management system designed to enhance safety and efficiency during large gatherings. It combines real-time crowd density analysis, predictive modeling, and emergency response coordination to ensure public safety.
 
 ## Features
 
@@ -123,3 +123,4 @@ Contributions are welcome! Please follow these steps:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
