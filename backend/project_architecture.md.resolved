@@ -1,0 +1,78 @@
+# CrowdShield Project Architecture & Workflow
+
+## Overview
+CrowdShield is a real-time safety monitoring system that uses AI to detect incidents (Fire, Weapons, Violence) from camera feeds. It employs a microservices architecture to handle detection, verification, storage, and user alerts.
+
+## System Components
+
+### 1. Livestream Service (`backend/livestream`)
+*   **Port**: `8000`
+*   **Role**: Captures the raw video feed from the camera (or OBS Virtual Camera) and streams it via WebSocket and HTTP (MJPEG).
+*   **Key Endpoints**:
+    *   `/video_feed/{camera_id}`: HTTP stream for image tags.
+    *   `/ws/push/{camera_id}`: WebSocket for low-latency streaming.
+
+### 2. Vision Model (`model/vision-model`)
+*   **Role**: The "Eyes" of the system. Runs locally to process video frames in real-time.
+*   **Technology**: YOLOv8 (Custom models for Fire, Weapons, Fight).
+*   **Workflow**:
+    *   Connects to the Livestream.
+    *   detects specific classes (Fire, Weapon, Person fighting).
+    *   When an event is detected, it records a short video clip.
+    *   **Action**: Uploads the clip + `event_type` metadata to the **Agent Service**.
+
+### 3. Agent Service (`model/agent`)
+*   **Port**: `8001`
+*   **Role**: The "Brain" / Validator. It verifies incidents to reduce false positives.
+*   **Technology**: Google Gemini API (Visual Question Answering).
+*   **Workflow**:
+    *   Receives video clip from Vision Model.
+    *   Extracts a frame and sends it to Gemini API to classify the scene.
+    *   *Fallback*: If Gemini API fails (e.g., rate limit), it trusts the `event_type` provided by the Vision Model.
+    *   **Action**: Uploads the validated incident (Video, Confidence, Severity) to the **Session Service**.
+
+### 4. Session Service (`backend/session`)
+*   **Port**: `8002`
+*   **Role**: The "State Manager". Manages the database and business logic.
+*   **Technology**: FastAPI, SQLite.
+*   **Workflow**:
+    *   Receives incident data from the Agent and stores it in SQLite (`crowd_shield.db`).
+    *   Serves the Frontend with a list of incidents (`/sessions`).
+    *   Handles **Approval/Rejection** logic.
+    *   **Action (On Approve)**:
+        *   Updates status to 'APPROVED'.
+        *   Triggers WhatsApp notification via Messenger Service.
+        *   Updates Firebase (for potential IoT/LED integration).
+
+### 5. Frontend (`frontend/app`)
+*   **Port**: `3000`
+*   **Role**: The "Dashboard".
+*   **Technology**: Next.js (React), Tailwind CSS.
+*   **Features**:
+    *   **Live Feed**: Displays the real-time stream.
+    *   **Incident List**: Polls `backend/session` every 3 seconds for new alerts.
+    *   **Approval Workflow**: Admins can review the looping clip and click "Approve" (triggers notification) or "Reject".
+
+## End-to-End Workflow
+
+1.  **Detection**:
+    *   Camera sees **FIRE**.
+    *   `vision-model` detects it, records `Fire_timestamp.mp4`.
+    *   Sends clip + `event_type="Fire"` to `agent`.
+
+2.  **Verification**:
+    *   `agent` receives valid clip.
+    *   Asks Gemini: "Is there fire?".
+    *   Gemini confirms (or fallback is triggers).
+    *   Uploads data to `backend/session` with `Severity: Critical`.
+
+3.  **Alerting**:
+    *   `backend/session` saves to DB with status `pending`.
+    *   `frontend` polls and sees new session.
+    *   **UI Update**: User sees "Potential Fire" overlay and "Approve/Reject" buttons.
+
+4.  **Response**:
+    *   Admin reviews clip.
+    *   Admin clicks **APPROVE**.
+    *   `frontend` calls `POST /session/{id}/approve`.
+    *   `backend/session` sends WhatsApp message to security team: "✅ INCIDENT APPROVED: Fire detected! [Link]".
