@@ -1,126 +1,72 @@
 # CrowdShield
 
-CrowdShield is a comprehensive crowd management system designed to enhance safety and efficiency during large gatherings. It combines real-time crowd density analysis, predictive modeling, and emergency response coordination to ensure public safety.
+CrowdShield is a real-time safety monitoring system utilizing AI to detect incidents (Fire, Violence, Stampede) from camera feeds. It employs a microservices architecture to handle detection, verification, storage, and user alerts.
+
+## Project Structure
+
+- `backend/session`: Central API for session management and persistence (Port 8002).
+- `backend/livestream`: WebSocket relay for low-latency video streaming (Port 8000).
+- `backend/messenger`: WhatsApp notification automation service (Port 8003).
+- `crowd_shield.db`: SQLite database for storing incident data.
 
 ## Features
 
-- **Real-Time Crowd Monitoring**: Utilizes computer vision to detect and track crowd density in various zones.
-- **Predictive Analytics**: Employs machine learning models to forecast crowd behavior and potential congestion points.
-- **Emergency Response**: Integrated alert system to notify authorities and deploy resources when crowd density exceeds safe limits.
-- **Zone Management**: Divide large areas into manageable zones for better monitoring and control.
-- **Historical Analysis**: Track crowd patterns over time to optimize event planning.
-
-## Tech Stack
-
-- **Frontend**: React, Redux Toolkit, Material-UI
-- **Backend**: Node.js, Express.js
-- **Database**: MongoDB
-- **AI/ML**: TensorFlow.js, Scikit-learn
-- **Real-Time Communication**: Socket.io
-- **Mapping**: Leaflet, Mapbox
+- **Microservice Architecture**: Decoupled services for session management, streaming, and messaging.
+- **AI-Powered Detection**: Integration with Vision Models for real-time threat detection.
+- **Automated Alerts**: Direct notifications via WhatsApp on incident approval.
+- **Persistent Storage**: Robust session tracking using SQLite.
 
 ## Installation
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- MongoDB
-- Python (for ML model training)
+- Python 3.9 or higher
+- [Playwright](https://playwright.dev/python/docs/intro) (for Messenger service)
 
-### Backend Setup
+### Setup
 
-1. Navigate to the backend directory:
+1. **Clone the repository**:
    ```bash
-   cd backend
+   git clone https://github.com/kalgiswar/CrowdShield.git
+   cd CrowdShield
    ```
 
-2. Install dependencies:
+2. **Install dependencies**:
    ```bash
-   npm install
+   pip install -r requirements.txt
+   playwright install chromium
    ```
 
-3. Configure environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your MongoDB URI and other settings
-   ```
+3. **Configure Environment**:
+   Check `.env.example` in each service folder and create your `.env` files if necessary.
 
-4. Start the server:
-   ```bash
-   npm start
-   ```
+## Running the Services
 
-### Frontend Setup
+You can start the backend services using the provided startup script:
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
+### Windows (PowerShell):
+```powershell
+./start_missing_services.ps1
+```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### Manual Start:
+- **Session Service**: `python backend/session/main.py`
+- **Livestream Service**: `python backend/livestream/main.py`
+- **Messenger Service**: `python backend/messenger/main.py`
 
-3. Start the development server:
-   ```bash
-   npm start
-   ```
+## Architecture
 
-## Usage
-
-### Dashboard
-
-The main dashboard provides a real-time overview of crowd density across different zones. You can view:
-- Current crowd levels
-- Density heatmaps
-- Historical trends
-- Alert notifications
-
-### Zone Management
-
-1. Go to the "Zones" section in the sidebar.
-2. Click "Add Zone" to create a new monitoring zone.
-3. Draw the zone boundaries on the map.
-4. Configure alert thresholds for the zone.
-
-### Alerts
-
-Alerts are automatically triggered when crowd density exceeds the configured thresholds. You can:
-- View active alerts on the map
-- Acknowledge alerts
-- View alert history
-- Configure notification preferences
-
-## Development
-
-### Adding a New Zone
-
-1. Draw the zone on the map in the "Zones" section.
-2. Set the density thresholds (e.g., Green: < 50 people, Yellow: 50-100, Red: > 100).
-3. Save the zone.
-
-### Training the ML Model
-
-1. Prepare your training data (images of different crowd densities).
-2. Run the training script:
-   ```bash
-   cd backend/ml_models
-   python train_model.py
-   ```
-3. The trained model will be saved automatically.
+For a detailed technical overview, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Contributing
 
-Contributions are welcome! Please follow these steps:
-
 1. Fork the repository.
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
+3. Commit your changes.
+4. Push to the branch.
 5. Open a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
